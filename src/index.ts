@@ -31,9 +31,14 @@ console.log("Hello world!", BOT_TOKEN);
 
 import { Api, TelegramClient } from "telegram";
 import { StringSession } from "telegram/sessions";
-import { CustomMessage } from "telegram/tl/custom/message";
+import * as readline from "readline/promises";
 
-const stringSession = new StringSession(""); // fill this later with the value from session.save()
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+const stringSession = new StringSession(process.env.STRING_SESSION ?? "");
 
 (async () => {
   console.log("Loading interactive example...");
@@ -41,35 +46,35 @@ const stringSession = new StringSession(""); // fill this later with the value f
     connectionRetries: 5,
   });
   await client.start({
-    botAuthToken: BOT_TOKEN,
+    phoneNumber: () => rl.question("phoneNumber: "),
+    phoneCode: () => rl.question("phoneCode: "),
+    onError: console.error,
   });
   console.log("You should now be connected.");
 
   const me = await client.getMe();
-
-  const channelId = "-1002103398404";
-  const msgIds = [3];
-
   if (me.accessHash) {
-    let views: (Pick<CustomMessage, "id" | "views"> | null)[] = [];
-
-    const messages = await client.invoke(
-      new Api.channels.GetMessages({
-        channel: bigInt(channelId),
-        id: msgIds.map((id) => new Api.InputMessageID({ id: id })),
+    const channel = await client.invoke(
+      new Api.contacts.ResolveUsername({
+        username: "web3ridge_kr",
       })
     );
 
-    if ("messages" in messages) {
-      views = messages.messages.map((msg) => {
-        if ("views" in msg && typeof msg.views === "number") {
-          return { id: msg.id, views: msg.views };
-        }
+    if ("channelId" in channel.peer) {
+      const messages = await client.invoke(
+        new Api.channels.GetMessages({
+          channel: bigInt(channel.peer.channelId),
+          id: [new Api.InputMessageID({ id: 17 })],
+        })
+      );
 
-        return null;
-      });
+      if (
+        "messages" in messages &&
+        messages.messages[0] &&
+        "views" in messages.messages[0]
+      ) {
+        console.log(messages.messages[0].views);
+      }
     }
-
-    console.log(views);
   }
 })();
