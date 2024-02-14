@@ -3,6 +3,7 @@ name: cron
 on:
   schedule:
     - cron: "0 8 30 * *"
+  workflow_dispatch:
 
 jobs:
   build:
