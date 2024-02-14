@@ -1,6 +1,9 @@
 import bigInt from "big-integer";
 import * as dotenv from "dotenv";
-import { getTrackingLinks } from "./links.js";
+import {
+  getTrackingLinks,
+  insertImpressionsByTrackingLinkIds,
+} from "./links.js";
 import { getChannelId, getMessagesViews } from "./telegram/api.js";
 
 dotenv.config({
@@ -53,11 +56,12 @@ links
 
         return links.map((link) => ({
           trackingLinkId: link.trackingLinkId,
-          views: views.find((viewObj) => viewObj.msgId === link.messageId)!
+          impression: views.find((viewObj) => viewObj.msgId === link.messageId)!
             .views,
         }));
       })
     )
   )
   .then((views) => views.flat())
+  .then((data) => insertImpressionsByTrackingLinkIds(data))
   .then(console.log);
