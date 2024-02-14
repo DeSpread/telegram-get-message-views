@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  cron:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,3 +20,9 @@ jobs:
         run: yarn --frozen-lockfile
       - run: yarn build
       - run: yarn start
+        env:
+          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
+          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+          TELEGRAM_STRING_SESSION: ${{ secrets.TELEGRAM_STRING_SESSION }}
+          TELEGRAM_PHONE_NUMBER: ${{ secrets.TELEGRAM_PHONE_NUMBER }}
+          API_ORIGIN: ${{ secrets.API_ORIGIN }}
