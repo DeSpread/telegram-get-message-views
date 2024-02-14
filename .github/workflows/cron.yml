@@ -26,3 +26,14 @@ jobs:
           TELEGRAM_STRING_SESSION: ${{ secrets.TELEGRAM_STRING_SESSION }}
           TELEGRAM_PHONE_NUMBER: ${{ secrets.TELEGRAM_PHONE_NUMBER }}
           API_ORIGIN: ${{ secrets.API_ORIGIN }}
+      - name: "Send GitHub Action trigger data to Slack workflow"
+        id: slack
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "status": ${{ job.status }}
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+        if: always() # Pick up events even if the job fails or is canceled.
