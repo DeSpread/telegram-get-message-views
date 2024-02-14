@@ -63,5 +63,4 @@ links
     )
   )
   .then((views) => views.flat())
-  .then((data) => insertImpressionsByTrackingLinkIds(data))
-  .then(console.log);
+  .then((data) => insertImpressionsByTrackingLinkIds(data));
