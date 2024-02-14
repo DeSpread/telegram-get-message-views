@@ -1,3 +1,4 @@
+import * as dotenv from "dotenv";
 import got from "got";
 
 interface TrackingLink {
@@ -10,8 +11,12 @@ interface Link {
   trackingLinks: TrackingLink[];
 }
 
+dotenv.config({
+  path: [".env.local", ".env"],
+});
+
 export function getLinks() {
-  return got.get("http://localhost:3100/links").json<Link[]>();
+  return got.get(`${process.env.API_ORIGIN}/links`).json<Link[]>();
 }
 
 export function getTrackingLinks() {

@@ -1,20 +1,16 @@
-import { resolve } from "path";
-import { TelegramClient } from "telegram";
-import { StringSession } from "telegram/sessions";
+import * as dotenv from "dotenv";
+import { TelegramClient, sessions } from "telegram";
 
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+dotenv.config({
+  path: [".env.local", ".env"],
+});
+
 const API_ID = parseInt(process.env.TELEGRAM_API_ID ?? "-1");
 const API_HASH = process.env.TELEGRAM_API_HASH;
 const STRING_SESSION = process.env.TELEGRAM_STRING_SESSION;
 const PHONE_NUMBER = process.env.TELEGRAM_PHONE_NUMBER;
 
-// if (BOT_TOKEN === undefined) {
-//   throw new Error(
-//     "TELEGRAM_BOT_TOKEN is undefined. please check the .env file at project root"
-//   );
-// }
-
-const stringSession = new StringSession(STRING_SESSION ?? "");
+const stringSession = new sessions.StringSession(STRING_SESSION ?? "");
 
 async function initClient() {
   if (!API_ID) {
