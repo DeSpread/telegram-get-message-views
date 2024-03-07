@@ -52,7 +52,12 @@ links
         const views = await getMessagesViews(
           bigInt(channelId),
           links.map((link) => link.messageId)
-        );
+        ).catch((err) => {
+          console.error("invalid error where getMessagesViews");
+          console.error("channelId - ", channelId);
+          console.error("links - ", links);
+          throw err;
+        });
 
         return links.map((link) => ({
           trackingLinkId: link.trackingLinkId,
