@@ -34,7 +34,7 @@ jobs:
           payload: |
             {
               "status": "${{ job.status }}",
-              "result": "${{ steps.node.outputs.* }}"
+              "result": "${{ join(steps.node.outputs.*, '\n') }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
