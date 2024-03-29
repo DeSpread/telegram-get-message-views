@@ -5,7 +5,7 @@ import {
   insertImpressionsByTrackingLinkIds,
 } from "./links.js";
 import { getChannelId, getMessagesViews } from "./telegram/api.js";
-import { exec } from "@actions/exec";
+import { exec } from "child_process";
 
 dotenv.config({
   path: [".env.local", ".env"],
