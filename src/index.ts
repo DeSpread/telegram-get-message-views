@@ -5,6 +5,7 @@ import {
   insertImpressionsByTrackingLinkIds,
 } from "./links.js";
 import { getChannelId, getMessagesViews } from "./telegram/api.js";
+import { exec } from "@actions/exec";
 
 dotenv.config({
   path: [".env.local", ".env"],
@@ -82,15 +83,9 @@ links
     )
   )
   .then((data) => insertImpressionsByTrackingLinkIds(data))
-  .then(() =>
-    console.log(
-      JSON.stringify(
-        {
-          failedLinks,
-        },
-        undefined,
-        2
-      )
-    )
-  )
+  .then(() => {
+    const result = { failedLinks };
+    console.log(JSON.stringify(result, undefined, 2));
+    exec(`echo "RESULT=${JSON.stringify(result)}" >> $GITHUB_OUTPUT`);
+  })
   .then(() => process.exit());

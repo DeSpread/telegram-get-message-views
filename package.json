@@ -17,6 +17,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@actions/exec": "^1.1.1",
     "dotenv": "^16.4.1",
     "got": "^14.2.0",
     "telegram": "^2.19.10"
