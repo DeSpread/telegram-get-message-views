@@ -21,6 +21,8 @@ const links = getTrackingLinks().then((links) =>
   links.filter((link) => link.type === "TELEGRAM")
 );
 
+let failedLinks: string[] = [];
+
 links
   .then((links) => {
     const srcList = links.map((link) => link.src);
@@ -61,12 +63,34 @@ links
 
         return links.map((link) => ({
           trackingLinkId: link.trackingLinkId,
-          impression: views.find((viewObj) => viewObj.msgId === link.messageId)!
-            .views,
+          impression: views.find((viewObj) => viewObj.msgId === link.messageId)
+            ?.views,
         }));
       })
     )
   )
   .then((views) => views.flat())
+  .then((views) =>
+    views.filter<{ trackingLinkId: string; impression: number }>(
+      (data): data is { trackingLinkId: string; impression: number } => {
+        const isNumber = typeof data.impression === "number";
+        if (!isNumber) {
+          failedLinks.push(data.trackingLinkId);
+        }
+        return isNumber;
+      }
+    )
+  )
   .then((data) => insertImpressionsByTrackingLinkIds(data))
+  .then(() =>
+    console.log(
+      JSON.stringify(
+        {
+          failedLinks,
+        },
+        undefined,
+        2
+      )
+    )
+  )
   .then(() => process.exit());
